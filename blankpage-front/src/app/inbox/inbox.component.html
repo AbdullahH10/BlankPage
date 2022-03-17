@@ -1,0 +1,24 @@
+<div class="container flex self-center justify-center m-auto h-screen w-screen">
+    <div class="inbox flex flex-col m-4 p-6">
+        <div class="header flex self-center justify-between flex-row w-[750px] p-4">
+            <h1 class="flex-start self-center font-sans font-bold text-9xl mb-8 py-2">Inbox</h1>
+            <button (click)="logout()" class="logout flex self-center justify-center mt-3 mb-3 p-3 text-xl bg-black shadow-sm rounded-md text-white">Logout</button>
+        </div>
+        <div class="uid_container flex self-center justify-between flex-col w-[1000px] p-4">
+            <p class="uid flex self-center justify-left w-full h-12 p-3 bg-gray-500/75 backdrop-blur-lg text-white shadow-sm ring-gray-300 rounded-lg">{{user.id}}</p>
+            <p class="instructions mt-1 mb-1 text-gray-500 font-bold">Copy the above code and share it to start getting messages.</p>
+            <p class="instructions mt-1 mb-1 text-gray-500 font-bold">Please visit 'http://blankpage.techytreats.com/writeMessage/' to send messages.</p>
+        </div>
+        <div class="message_box flex flex-row flex-wrap self-center justify-center">
+            <div *ngFor="let message of user.messages" class="message_card flex flex-col basis-1 m-4 border border-black-2 shadow-md rounded-lg min-h-[500px] min-w-[400px]">
+                <div class="title_bar bg-gray-200 p-4 font-medium">
+                    <!-- <p>Sent {{message.date}}</p> -->
+                    <p>Sent at<br> {{message.time | date: 'medium'}}</p>
+                </div>
+                <div class="message_body p-4 font-[14pt] text-justify bg-white h-full">
+                    <p>{{message.messageBody}}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
