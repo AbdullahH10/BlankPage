@@ -6,7 +6,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 @Injectable()
 export class AppService {
 
-    constructor(@InjectRepository(User) private readonly repository: Repository<User>, @InjectRepository(User) private readonly mongoRepository: MongoRepository<User>) {}
+    constructor(
+        @InjectRepository(User) private readonly repository: Repository<User>,
+        @InjectRepository(User) private readonly mongoRepository: MongoRepository<User>
+    ) {}
 
     async setUser(user: User): Promise<any> {
 
@@ -29,7 +32,7 @@ export class AppService {
     }
 
     async sendMessage(id: ObjectID, userData: User): Promise<any> {
-        let storeUserObject = this.mongoRepository.findOne(id);
+        const storeUserObject = this.mongoRepository.findOne(id);
         return await this.mongoRepository.updateOne({email: (await storeUserObject).email},{$push:{messages: userData.messages[0]}});
         //return await this.repository.update(id, {messages: userData.messages});
     }
