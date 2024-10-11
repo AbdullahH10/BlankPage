@@ -16,9 +16,23 @@ export class RegistrationService {
         const user: User = new User();
         
         user.userName = userDto.userName;
-        user.salt = await bcrypt.genSalt();
-        const saltedPassword = userDto.password.concat(user.salt);
-        user.password = await bcrypt.hash(saltedPassword,12);
+        bcrypt.genSalt().then(
+            (salt) => {
+                user.salt = salt;
+                userDto.password.concat(salt);
+            },
+            (error) => {
+                console.log(error);
+            }
+        );
+        bcrypt.hash(userDto.password,12).then(
+            (encoded) => {
+                user.password = encoded;
+            },
+            (error) => {
+                console.log(error);
+            }
+        );
 
         this.userRepository.save(user);
     }
