@@ -7,7 +7,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppModule = void 0;
-const user_entity_1 = require("./Entities/user.entity");
+const user_entity_1 = require("./Entity/user.entity");
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const app_controller_1 = require("./app.controller");
@@ -19,10 +19,10 @@ AppModule = __decorate([
         imports: [
             typeorm_1.TypeOrmModule.forRoot({
                 type: 'mongodb',
-                host: 'localhost',
+                host: '127.0.0.1',
                 port: 27017,
-                database: 'blankpage',
-                entities: [user_entity_1.User]
+                database: 'blankpage_test',
+                entities: [user_entity_1.User],
             }),
             typeorm_1.TypeOrmModule.forFeature([user_entity_1.User]),
         ],

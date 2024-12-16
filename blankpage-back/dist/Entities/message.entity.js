@@ -15,16 +15,12 @@ let Message = class Message {
 };
 __decorate([
     (0, typeorm_1.Column)(),
-    __metadata("design:type", Number)
-], Message.prototype, "date", void 0);
-__decorate([
-    (0, typeorm_1.Column)(),
-    __metadata("design:type", Number)
-], Message.prototype, "time", void 0);
+    __metadata("design:type", Date)
+], Message.prototype, "timestamp", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
-], Message.prototype, "messageBody", void 0);
+], Message.prototype, "message", void 0);
 Message = __decorate([
     (0, typeorm_1.Entity)()
 ], Message);

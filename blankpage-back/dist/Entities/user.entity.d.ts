@@ -1,8 +1,7 @@
-import { ObjectID } from "typeorm";
 import { Message } from "./message.entity";
 export declare class User {
-    id?: ObjectID;
-    email?: string;
+    userId?: number;
+    userName?: string;
     password?: string;
     messages?: Message[];
 }

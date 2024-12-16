@@ -11,27 +11,30 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.User = void 0;
 const typeorm_1 = require("typeorm");
-const message_entity_1 = require("./message.entity");
 let User = class User {
 };
 __decorate([
-    (0, typeorm_1.ObjectIdColumn)(),
-    __metadata("design:type", typeorm_1.ObjectID)
-], User.prototype, "id", void 0);
+    (0, typeorm_1.PrimaryGeneratedColumn)(),
+    __metadata("design:type", Number)
+], User.prototype, "userId", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
-], User.prototype, "email", void 0);
+], User.prototype, "userName", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], User.prototype, "password", void 0);
 __decorate([
-    (0, typeorm_1.Column)(type => message_entity_1.Message),
+    (0, typeorm_1.Column)({
+        type: 'jsonb',
+        nullable: true
+    }),
     __metadata("design:type", Array)
 ], User.prototype, "messages", void 0);
 User = __decorate([
-    (0, typeorm_1.Entity)()
+    (0, typeorm_1.Entity)(),
+    (0, typeorm_1.Unique)(['userName'])
 ], User);
 exports.User = User;
 //# sourceMappingURL=user.entity.js.map
