@@ -13,43 +13,38 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppService = void 0;
-const user_entity_1 = require("./Entities/user.entity");
-const common_1 = require("@nestjs/common");
+const user_entity_1 = require("./Entity/user.entity");
 const typeorm_1 = require("typeorm");
 const typeorm_2 = require("@nestjs/typeorm");
+const common_1 = require("@nestjs/common");
+const console_1 = require("console");
 let AppService = class AppService {
-    constructor(repository, mongoRepository) {
+    constructor(repository) {
         this.repository = repository;
-        this.mongoRepository = mongoRepository;
     }
-    async setUser(user) {
-        if (await this.repository.findOne({ email: `${user.email}` }) === undefined) {
-            this.repository.save(user);
-            return true;
-        }
-        else {
+    async createUser(user) {
+        return await this.repository.findOne({
+            userName: user.userName
+        }).then((searchUser) => {
+            if (searchUser !== undefined && searchUser.userName === user.userName) {
+                (0, console_1.log)('User already exists.');
+                return false;
+            }
+            else {
+                const userEntity = this.repository.create(user);
+                this.repository.save(userEntity);
+                return true;
+            }
+        }).catch((error) => {
+            (0, console_1.log)(error);
             return false;
-        }
-    }
-    async getUser(user) {
-        return this.repository.findOne({ where: { email: { $eq: user.email } } });
-    }
-    async getMessages(user) {
-        return await this.repository.findOne({ where: { email: { $eq: user.email } } });
-    }
-    async sendMessage(id, userData) {
-        let storeUserObject = this.mongoRepository.findOne(id);
-        return await this.mongoRepository.updateOne({ email: (await storeUserObject).email }, { $push: { messages: userData.messages[0] } });
-    }
-    async getAll() {
-        return this.repository.find();
+        });
     }
 };
 AppService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_2.InjectRepository)(user_entity_1.User)),
-    __param(1, (0, typeorm_2.InjectRepository)(user_entity_1.User)),
-    __metadata("design:paramtypes", [typeorm_1.Repository, typeorm_1.MongoRepository])
+    __metadata("design:paramtypes", [typeorm_1.MongoRepository])
 ], AppService);
 exports.AppService = AppService;
 //# sourceMappingURL=app.service.js.map

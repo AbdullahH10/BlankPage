@@ -1,33 +1,46 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { UserDTO } from './DTO/user.dto';
+import { Body, Controller, HttpCode, Post } from '@nestjs/common';
 import { AppService } from './app.service';
-import { User } from './Entities/user.entity';
+import { ResponseDTO } from './DTO/response.dto';
 
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Get('/')
-  async getAll(): Promise<any> {
-    return this.appService.getAll();
+  @Post('/user/create')
+  @HttpCode(200)
+  createUser(@Body() user: UserDTO){
+    return this.appService.createUser(user).then(
+      (isUserCreated) => {
+        if(isUserCreated){
+          return new ResponseDTO(
+            'User created successfully',
+            null
+          );
+        }
+        else{
+          return new ResponseDTO(
+            'Could not create user.',
+            null
+          );
+        }
+      }
+    )
   }
+  
+  // @Get('/user/get')
+  // getAllUsers(): Promise<any> {
+  // }
 
-  @Post('/setUser')
-  async setUser(@Body() userData): Promise<any> {
-    return this.appService.setUser(userData);
-  }
+  // @Get('/user/get/:userId')
+  // getUser(@Param('userId') userId: number): Promise<any> {
+  // }
 
-  @Post('/getUser')
-  async getUser(@Body() userData): Promise<any> {
-    return this.appService.getUser(userData);
-  }
+  // @Post('/message/post/:userId')
+  // postMessage(@Param('userId') userId: number,@Body() data): Promise<void> {
+  // }
 
-  @Post('/getMessages/')
-  async getMessages(@Body() userData): Promise<any> {
-    return this.appService.getMessages(userData);
-  }
-
-  @Post('/sendMessage/:id')
-  async sendMessage(@Param() params, @Body() userData): Promise<void> {
-    return this.appService.sendMessage(params.id,userData);
-  }
+  // @Get('/message/get/:userId')
+  // getMessages(@Param('userId') userId: number): Promise<any> {
+  // }
 }
