@@ -5,6 +5,7 @@ import { UserDTO } from './DTO/user.dto';
 import { Injectable } from '@nestjs/common';
 import { log } from 'console';
 import { v4 } from 'uuid';
+import { hash, verify } from 'argon2';
 
 @Injectable()
 export class AppService {
@@ -15,6 +16,7 @@ export class AppService {
     ) { }
 
     async createUser(user: UserDTO): Promise<boolean> {
+        const passwordHash: string = await hash(user.password);
         return await this.repository.findOne({
             userName: user.userName
         }).then(
@@ -24,7 +26,10 @@ export class AppService {
                     return false;
                 }
                 else {
-                    const userEntity = this.repository.create(user);
+                    const userEntity: User = new User();
+                    userEntity.userName = user.userName;
+                    userEntity.password = passwordHash;
+                    userEntity.token = v4();
                     this.repository.save(userEntity);
                     return true;
                 }
@@ -38,19 +43,13 @@ export class AppService {
     }
 
     async authenticateUser(user: UserDTO): Promise<boolean> {
-        return this.repository.findOne({
-            "userName": user.userName,
-            "password": user.password
-        }).then(
-            (result) => {
-                if (result !== undefined && result !== null) {
-                    return true;
-                }
-                else {
-                    return false;
-                }
-            }
-        );
+        const authUser: User = await this.repository.findOne({
+            "userName": user.userName
+        });
+        if(authUser !== null && authUser !== undefined){
+            return verify(authUser.password,user.password);
+        }
+        return false;
     }
 
     async getToken(user: UserDTO): Promise<string> {

@@ -19,11 +19,13 @@ const typeorm_2 = require("@nestjs/typeorm");
 const common_1 = require("@nestjs/common");
 const console_1 = require("console");
 const uuid_1 = require("uuid");
+const argon2_1 = require("argon2");
 let AppService = class AppService {
     constructor(repository) {
         this.repository = repository;
     }
     async createUser(user) {
+        const passwordHash = await (0, argon2_1.hash)(user.password);
         return await this.repository.findOne({
             userName: user.userName
         }).then((searchUser) => {
@@ -32,7 +34,10 @@ let AppService = class AppService {
                 return false;
             }
             else {
-                const userEntity = this.repository.create(user);
+                const userEntity = new user_entity_1.User();
+                userEntity.userName = user.userName;
+                userEntity.password = passwordHash;
+                userEntity.token = (0, uuid_1.v4)();
                 this.repository.save(userEntity);
                 return true;
             }
@@ -42,17 +47,13 @@ let AppService = class AppService {
         });
     }
     async authenticateUser(user) {
-        return this.repository.findOne({
-            "userName": user.userName,
-            "password": user.password
-        }).then((result) => {
-            if (result !== undefined && result !== null) {
-                return true;
-            }
-            else {
-                return false;
-            }
+        const authUser = await this.repository.findOne({
+            "userName": user.userName
         });
+        if (authUser !== null && authUser !== undefined) {
+            return (0, argon2_1.verify)(authUser.password, user.password);
+        }
+        return false;
     }
     async getToken(user) {
         const token = (0, uuid_1.v4)();

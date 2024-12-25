@@ -32,11 +32,11 @@ __decorate([
 __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
-], User.prototype, "token", void 0);
+], User.prototype, "password", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
-], User.prototype, "password", void 0);
+], User.prototype, "token", void 0);
 __decorate([
     (0, typeorm_1.Column)({
         type: 'jsonb',

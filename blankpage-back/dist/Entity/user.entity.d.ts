@@ -4,7 +4,7 @@ export declare class User {
     _id: ObjectID;
     userId: string;
     userName: string;
-    token: string;
     password: string;
+    token: string;
     messages?: Message[];
 }

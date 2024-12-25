@@ -21,10 +21,10 @@ export class User{
     userName: string;
 
     @Column()
-    token: string;
+    password: string;
 
     @Column()
-    password: string;
+    token: string;
 
     @Column({
         type: 'jsonb',
