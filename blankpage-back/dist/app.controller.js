@@ -21,15 +21,29 @@ let AppController = class AppController {
     constructor(appService) {
         this.appService = appService;
     }
-    createUser(user) {
-        return this.appService.createUser(user).then((isUserCreated) => {
-            if (isUserCreated) {
-                return new response_dto_1.ResponseDTO('User created successfully', null);
+    async createUser(user) {
+        const isUserCreated = await this.appService.createUser(user);
+        if (isUserCreated) {
+            return new response_dto_1.ResponseDTO('User created successfully', null);
+        }
+        else {
+            return new response_dto_1.ResponseDTO('Could not create user. Please try again with a different user name.', null);
+        }
+    }
+    async loginUser(user) {
+        const isAuthenticated = await this.appService.authenticateUser(user);
+        if (isAuthenticated) {
+            const token = await this.appService.getToken(user);
+            if (token !== null) {
+                return new response_dto_1.ResponseDTO('User logged in successfully.', token);
             }
             else {
-                return new response_dto_1.ResponseDTO('Could not create user.', null);
+                return new response_dto_1.ResponseDTO('User authenticated but could not generate token.', token);
             }
-        });
+        }
+        else {
+            return new response_dto_1.ResponseDTO('Login failed. Incorrect user name or password.', null);
+        }
     }
 };
 __decorate([
@@ -38,8 +52,16 @@ __decorate([
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [user_dto_1.UserDTO]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], AppController.prototype, "createUser", null);
+__decorate([
+    (0, common_1.Post)('/user/login'),
+    (0, common_1.HttpCode)(200),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [user_dto_1.UserDTO]),
+    __metadata("design:returntype", Promise)
+], AppController.prototype, "loginUser", null);
 AppController = __decorate([
     (0, common_1.Controller)(),
     __metadata("design:paramtypes", [app_service_1.AppService])

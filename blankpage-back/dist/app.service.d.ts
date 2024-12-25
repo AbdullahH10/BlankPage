@@ -5,4 +5,6 @@ export declare class AppService {
     private readonly repository;
     constructor(repository: MongoRepository<User>);
     createUser(user: UserDTO): Promise<boolean>;
+    authenticateUser(user: UserDTO): Promise<boolean>;
+    getToken(user: UserDTO): Promise<string>;
 }

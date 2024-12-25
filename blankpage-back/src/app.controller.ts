@@ -9,32 +9,48 @@ export class AppController {
 
   @Post('/user/create')
   @HttpCode(200)
-  createUser(@Body() user: UserDTO){
-    return this.appService.createUser(user).then(
-      (isUserCreated) => {
-        if(isUserCreated){
-          return new ResponseDTO(
-            'User created successfully',
-            null
-          );
-        }
-        else{
-          return new ResponseDTO(
-            'Could not create user.',
-            null
-          );
-        }
-      }
-    )
+  async createUser(@Body() user: UserDTO): Promise<ResponseDTO>{
+    const isUserCreated = await this.appService.createUser(user);
+    if (isUserCreated) {
+      return new ResponseDTO(
+        'User created successfully',
+        null
+      );
+    }
+    else {
+      return new ResponseDTO(
+        'Could not create user. Please try again with a different user name.',
+        null
+      );
+    }
   }
-  
-  // @Get('/user/get')
-  // getAllUsers(): Promise<any> {
-  // }
 
-  // @Get('/user/get/:userId')
-  // getUser(@Param('userId') userId: number): Promise<any> {
-  // }
+  @Post('/user/login')
+  @HttpCode(200)
+  async loginUser(@Body() user: UserDTO): Promise<ResponseDTO>{
+    const isAuthenticated = await this.appService.authenticateUser(user);
+    if (isAuthenticated) {
+      const token: string = await this.appService.getToken(user);
+      if(token !== null){
+        return new ResponseDTO(
+          'User logged in successfully.',
+          token
+        );
+      }
+      else{
+        return new ResponseDTO(
+          'User authenticated but could not generate token.',
+          token
+        );
+      }
+    }
+    else {
+      return new ResponseDTO(
+        'Login failed. Incorrect user name or password.',
+        null
+      );
+    }
+  }
 
   // @Post('/message/post/:userId')
   // postMessage(@Param('userId') userId: number,@Body() data): Promise<void> {

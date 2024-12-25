@@ -18,6 +18,7 @@ const typeorm_1 = require("typeorm");
 const typeorm_2 = require("@nestjs/typeorm");
 const common_1 = require("@nestjs/common");
 const console_1 = require("console");
+const uuid_1 = require("uuid");
 let AppService = class AppService {
     constructor(repository) {
         this.repository = repository;
@@ -39,6 +40,34 @@ let AppService = class AppService {
             (0, console_1.log)(error);
             return false;
         });
+    }
+    async authenticateUser(user) {
+        return this.repository.findOne({
+            "userName": user.userName,
+            "password": user.password
+        }).then((result) => {
+            if (result !== undefined && result !== null) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        });
+    }
+    async getToken(user) {
+        const token = (0, uuid_1.v4)();
+        const result = await this.repository.findOneAndUpdate({
+            "userName": user.userName,
+            "password": user.password
+        }, {
+            $set: {
+                "token": token
+            }
+        });
+        if (result.ok === 1) {
+            return token;
+        }
+        return null;
     }
 };
 AppService = __decorate([
