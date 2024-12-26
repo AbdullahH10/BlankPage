@@ -23,6 +23,9 @@ export class User{
     @Column()
     password: string;
 
+    @Column()
+    token: string;
+
     @Column({
         type: 'jsonb',
         nullable: true

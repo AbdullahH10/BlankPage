@@ -1,7 +1,10 @@
 import { UserDTO } from './DTO/user.dto';
-import { Body, Controller, HttpCode, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Param, Post } from '@nestjs/common';
 import { AppService } from './app.service';
 import { ResponseDTO } from './DTO/response.dto';
+import { Token } from './DTO/token.dto';
+import { MessageDTO } from './DTO/message.dto';
+import { Message } from './Model/message.model';
 
 @Controller()
 export class AppController {
@@ -9,38 +12,87 @@ export class AppController {
 
   @Post('/user/create')
   @HttpCode(200)
-  createUser(@Body() user: UserDTO){
-    return this.appService.createUser(user).then(
-      (isUserCreated) => {
-        if(isUserCreated){
-          return new ResponseDTO(
-            'User created successfully',
-            null
-          );
-        }
-        else{
-          return new ResponseDTO(
-            'Could not create user.',
-            null
-          );
-        }
-      }
-    )
+  async createUser(@Body() user: UserDTO): Promise<ResponseDTO>{
+    const isUserCreated = await this.appService.createUser(user);
+    if (isUserCreated) {
+      return new ResponseDTO(
+        'User created successfully',
+        null
+      );
+    }
+    else {
+      return new ResponseDTO(
+        'Could not create user. Please try again with a different user name.',
+        null
+      );
+    }
   }
-  
-  // @Get('/user/get')
-  // getAllUsers(): Promise<any> {
-  // }
 
-  // @Get('/user/get/:userId')
-  // getUser(@Param('userId') userId: number): Promise<any> {
-  // }
+  @Post('/user/login')
+  @HttpCode(200)
+  async loginUser(@Body() user: UserDTO): Promise<ResponseDTO>{
+    const isAuthenticated: boolean = await this.appService.authenticateUser(user);
+    if (isAuthenticated) {
+      const token: Token = await this.appService.getToken(user);
+      if(token !== null){
+        return new ResponseDTO(
+          'User logged in successfully.',
+          token
+        );
+      }
+      else{
+        return new ResponseDTO(
+          'User authenticated but could not generate token.',
+          token
+        );
+      }
+    }
+    else {
+      return new ResponseDTO(
+        'Login failed. Incorrect user name or password.',
+        null
+      );
+    }
+  }
 
-  // @Post('/message/post/:userId')
-  // postMessage(@Param('userId') userId: number,@Body() data): Promise<void> {
-  // }
+  @Post('/message/post/:userId')
+  @HttpCode(200)
+  async postMessage(
+    @Param('userId') userId: string,
+    @Body() message: MessageDTO
+  ): Promise<ResponseDTO> {
+    const isPosted: boolean = await this.appService.addMessage(userId,message);
+    if(isPosted){
+      return new ResponseDTO(
+        'Message sent.',
+        null
+      );
+    }
+    return new ResponseDTO(
+      'Failed to send message. Please try again.',
+      null
+    );
+  }
 
-  // @Get('/message/get/:userId')
-  // getMessages(@Param('userId') userId: number): Promise<any> {
-  // }
+  @Get('/message/get')
+  @HttpCode(200)
+  async getMessages(@Body() token: Token): Promise<ResponseDTO> {
+    const messages: Message[] = await this.appService.getMessages(token);
+    if(messages !== null && messages !== undefined){
+      return new ResponseDTO(
+        messages.length+' messages found.',
+        messages
+      );
+    }
+    else if(messages === undefined){
+      return new ResponseDTO(
+        'No message found',
+        null
+      );
+    }
+    return new ResponseDTO(
+      'Failed to get all messages. Token invalid or database not responding.',
+      null
+    );
+  }
 }

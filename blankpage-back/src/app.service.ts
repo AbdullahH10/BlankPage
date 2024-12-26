@@ -1,9 +1,14 @@
 import { User } from './Entity/user.entity';
-import { MongoRepository } from 'typeorm';
+import { FindAndModifyWriteOpResultObject, MongoRepository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserDTO } from './DTO/user.dto';
-import { ConflictException, Injectable } from '@nestjs/common';
-import { error, log } from 'console';
+import { Injectable } from '@nestjs/common';
+import { log } from 'console';
+import { v4 } from 'uuid';
+import { hash, verify } from 'argon2';
+import { Token } from './DTO/token.dto';
+import { MessageDTO } from './DTO/message.dto';
+import { Message } from './Model/message.model';
 
 @Injectable()
 export class AppService {
@@ -13,7 +18,8 @@ export class AppService {
         private readonly repository: MongoRepository<User>
     ) { }
 
-    async createUser(user: UserDTO){
+    async createUser(user: UserDTO): Promise<boolean> {
+        const passwordHash: string = await hash(user.password);
         return await this.repository.findOne({
             userName: user.userName
         }).then(
@@ -23,7 +29,9 @@ export class AppService {
                     return false;
                 }
                 else {
-                    const userEntity = this.repository.create(user);
+                    const userEntity: User = new User();
+                    userEntity.userName = user.userName;
+                    userEntity.password = passwordHash;
                     this.repository.save(userEntity);
                     return true;
                 }
@@ -34,5 +42,70 @@ export class AppService {
                 return false;
             }
         );
+    }
+
+    async authenticateUser(user: UserDTO): Promise<boolean> {
+        const authUser: User = await this.repository.findOne({
+            "userName": user.userName
+        });
+        if(authUser !== null && authUser !== undefined){
+            return verify(authUser.password,user.password);
+        }
+        return false;
+    }
+
+    async getToken(user: UserDTO): Promise<Token> {
+        const token: string = v4();
+        const result: FindAndModifyWriteOpResultObject = await this.repository.findOneAndUpdate(
+            {
+                "userName": user.userName
+            },
+            {
+                $set: {
+                    "token": token
+                }
+            }
+        );
+
+        if (result.ok === 1) {
+            const tokenObj: Token = new Token();
+            tokenObj.userId = result.value.userId;
+            tokenObj.token = token;
+            return tokenObj;
+        }
+        return null;
+    }
+
+    async addMessage(userId: string, messageDTO: MessageDTO): Promise<boolean> {
+        const message: Message = new Message();
+        message.timestamp = new Date();
+        message.message = messageDTO.message;
+        const result: FindAndModifyWriteOpResultObject = await this.repository.findOneAndUpdate(
+            {
+                "userId": userId
+            },
+            {
+                $push: {
+                    "messages": message
+                }
+            }
+        );
+
+        if(result.ok === 1 && result.value !== null){
+            return true;
+        }
+        return false;
+    }
+
+    async getMessages(token: Token): Promise<Message[]> {
+        const user: User = await this.repository.findOne({
+            "userId": token.userId,
+            "token": token.token
+        });
+
+        if(user!== null && user !== undefined){
+            return user.messages;
+        }
+        return null;
     }
 }
