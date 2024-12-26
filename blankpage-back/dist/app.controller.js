@@ -17,6 +17,8 @@ const user_dto_1 = require("./DTO/user.dto");
 const common_1 = require("@nestjs/common");
 const app_service_1 = require("./app.service");
 const response_dto_1 = require("./DTO/response.dto");
+const token_dto_1 = require("./DTO/token.dto");
+const message_dto_1 = require("./DTO/message.dto");
 let AppController = class AppController {
     constructor(appService) {
         this.appService = appService;
@@ -45,6 +47,23 @@ let AppController = class AppController {
             return new response_dto_1.ResponseDTO('Login failed. Incorrect user name or password.', null);
         }
     }
+    async postMessage(userId, message) {
+        const isPosted = await this.appService.addMessage(userId, message);
+        if (isPosted) {
+            return new response_dto_1.ResponseDTO('Message sent.', null);
+        }
+        return new response_dto_1.ResponseDTO('Failed to send message. Please try again.', null);
+    }
+    async getMessages(token) {
+        const messages = await this.appService.getMessages(token);
+        if (messages !== null && messages !== undefined) {
+            return new response_dto_1.ResponseDTO(messages.length + ' messages found.', messages);
+        }
+        else if (messages === undefined) {
+            return new response_dto_1.ResponseDTO('No message found', null);
+        }
+        return new response_dto_1.ResponseDTO('Failed to get all messages. Token invalid or database not responding.', null);
+    }
 };
 __decorate([
     (0, common_1.Post)('/user/create'),
@@ -62,6 +81,23 @@ __decorate([
     __metadata("design:paramtypes", [user_dto_1.UserDTO]),
     __metadata("design:returntype", Promise)
 ], AppController.prototype, "loginUser", null);
+__decorate([
+    (0, common_1.Post)('/message/post/:userId'),
+    (0, common_1.HttpCode)(200),
+    __param(0, (0, common_1.Param)('userId')),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, message_dto_1.MessageDTO]),
+    __metadata("design:returntype", Promise)
+], AppController.prototype, "postMessage", null);
+__decorate([
+    (0, common_1.Get)('/message/get'),
+    (0, common_1.HttpCode)(200),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [token_dto_1.Token]),
+    __metadata("design:returntype", Promise)
+], AppController.prototype, "getMessages", null);
 AppController = __decorate([
     (0, common_1.Controller)(),
     __metadata("design:paramtypes", [app_service_1.AppService])

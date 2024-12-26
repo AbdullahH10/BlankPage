@@ -1,8 +1,10 @@
 import { UserDTO } from './DTO/user.dto';
-import { Body, Controller, HttpCode, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Param, Post } from '@nestjs/common';
 import { AppService } from './app.service';
 import { ResponseDTO } from './DTO/response.dto';
 import { Token } from './DTO/token.dto';
+import { MessageDTO } from './DTO/message.dto';
+import { Message } from './Model/message.model';
 
 @Controller()
 export class AppController {
@@ -53,11 +55,44 @@ export class AppController {
     }
   }
 
-  // @Post('/message/post/:userId')
-  // postMessage(@Param('userId') userId: number,@Body() data): Promise<void> {
-  // }
+  @Post('/message/post/:userId')
+  @HttpCode(200)
+  async postMessage(
+    @Param('userId') userId: string,
+    @Body() message: MessageDTO
+  ): Promise<ResponseDTO> {
+    const isPosted: boolean = await this.appService.addMessage(userId,message);
+    if(isPosted){
+      return new ResponseDTO(
+        'Message sent.',
+        null
+      );
+    }
+    return new ResponseDTO(
+      'Failed to send message. Please try again.',
+      null
+    );
+  }
 
-  // @Get('/message/get/:userId')
-  // getMessages(@Param('userId') userId: number): Promise<any> {
-  // }
+  @Get('/message/get')
+  @HttpCode(200)
+  async getMessages(@Body() token: Token): Promise<ResponseDTO> {
+    const messages: Message[] = await this.appService.getMessages(token);
+    if(messages !== null && messages !== undefined){
+      return new ResponseDTO(
+        messages.length+' messages found.',
+        messages
+      );
+    }
+    else if(messages === undefined){
+      return new ResponseDTO(
+        'No message found',
+        null
+      );
+    }
+    return new ResponseDTO(
+      'Failed to get all messages. Token invalid or database not responding.',
+      null
+    );
+  }
 }

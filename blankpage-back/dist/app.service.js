@@ -21,6 +21,7 @@ const console_1 = require("console");
 const uuid_1 = require("uuid");
 const argon2_1 = require("argon2");
 const token_dto_1 = require("./DTO/token.dto");
+const message_model_1 = require("./Model/message.model");
 let AppService = class AppService {
     constructor(repository) {
         this.repository = repository;
@@ -69,6 +70,32 @@ let AppService = class AppService {
             tokenObj.userId = result.value.userId;
             tokenObj.token = token;
             return tokenObj;
+        }
+        return null;
+    }
+    async addMessage(userId, messageDTO) {
+        const message = new message_model_1.Message();
+        message.timestamp = new Date();
+        message.message = messageDTO.message;
+        const result = await this.repository.findOneAndUpdate({
+            "userId": userId
+        }, {
+            $push: {
+                "messages": message
+            }
+        });
+        if (result.ok === 1 && result.value !== null) {
+            return true;
+        }
+        return false;
+    }
+    async getMessages(token) {
+        const user = await this.repository.findOne({
+            "userId": token.userId,
+            "token": token.token
+        });
+        if (user !== null && user !== undefined) {
+            return user.messages;
         }
         return null;
     }

@@ -1,5 +1,5 @@
 import { User } from './Entity/user.entity';
-import { FindAndModifyWriteOpResultObject, MongoRepository, UpdateWriteOpResult } from 'typeorm';
+import { FindAndModifyWriteOpResultObject, MongoRepository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserDTO } from './DTO/user.dto';
 import { Injectable } from '@nestjs/common';
@@ -7,6 +7,8 @@ import { log } from 'console';
 import { v4 } from 'uuid';
 import { hash, verify } from 'argon2';
 import { Token } from './DTO/token.dto';
+import { MessageDTO } from './DTO/message.dto';
+import { Message } from './Model/message.model';
 
 @Injectable()
 export class AppService {
@@ -70,6 +72,39 @@ export class AppService {
             tokenObj.userId = result.value.userId;
             tokenObj.token = token;
             return tokenObj;
+        }
+        return null;
+    }
+
+    async addMessage(userId: string, messageDTO: MessageDTO): Promise<boolean> {
+        const message: Message = new Message();
+        message.timestamp = new Date();
+        message.message = messageDTO.message;
+        const result: FindAndModifyWriteOpResultObject = await this.repository.findOneAndUpdate(
+            {
+                "userId": userId
+            },
+            {
+                $push: {
+                    "messages": message
+                }
+            }
+        );
+
+        if(result.ok === 1 && result.value !== null){
+            return true;
+        }
+        return false;
+    }
+
+    async getMessages(token: Token): Promise<Message[]> {
+        const user: User = await this.repository.findOne({
+            "userId": token.userId,
+            "token": token.token
+        });
+
+        if(user!== null && user !== undefined){
+            return user.messages;
         }
         return null;
     }
