@@ -6,6 +6,7 @@ import { Injectable } from '@nestjs/common';
 import { log } from 'console';
 import { v4 } from 'uuid';
 import { hash, verify } from 'argon2';
+import { Token } from './DTO/token.dto';
 
 @Injectable()
 export class AppService {
@@ -51,7 +52,7 @@ export class AppService {
         return false;
     }
 
-    async getToken(user: UserDTO): Promise<string> {
+    async getToken(user: UserDTO): Promise<Token> {
         const token: string = v4();
         const result: FindAndModifyWriteOpResultObject = await this.repository.findOneAndUpdate(
             {
@@ -65,7 +66,10 @@ export class AppService {
         );
 
         if (result.ok === 1) {
-            return token;
+            const tokenObj: Token = new Token();
+            tokenObj.userId = result.value.userId;
+            tokenObj.token = token;
+            return tokenObj;
         }
         return null;
     }

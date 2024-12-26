@@ -20,6 +20,7 @@ const common_1 = require("@nestjs/common");
 const console_1 = require("console");
 const uuid_1 = require("uuid");
 const argon2_1 = require("argon2");
+const token_dto_1 = require("./DTO/token.dto");
 let AppService = class AppService {
     constructor(repository) {
         this.repository = repository;
@@ -37,7 +38,6 @@ let AppService = class AppService {
                 const userEntity = new user_entity_1.User();
                 userEntity.userName = user.userName;
                 userEntity.password = passwordHash;
-                userEntity.token = (0, uuid_1.v4)();
                 this.repository.save(userEntity);
                 return true;
             }
@@ -65,7 +65,10 @@ let AppService = class AppService {
             }
         });
         if (result.ok === 1) {
-            return token;
+            const tokenObj = new token_dto_1.Token();
+            tokenObj.userId = result.value.userId;
+            tokenObj.token = token;
+            return tokenObj;
         }
         return null;
     }

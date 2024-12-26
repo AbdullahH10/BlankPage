@@ -2,6 +2,7 @@ import { UserDTO } from './DTO/user.dto';
 import { Body, Controller, HttpCode, Post } from '@nestjs/common';
 import { AppService } from './app.service';
 import { ResponseDTO } from './DTO/response.dto';
+import { Token } from './DTO/token.dto';
 
 @Controller()
 export class AppController {
@@ -30,7 +31,7 @@ export class AppController {
   async loginUser(@Body() user: UserDTO): Promise<ResponseDTO>{
     const isAuthenticated: boolean = await this.appService.authenticateUser(user);
     if (isAuthenticated) {
-      const token: string = await this.appService.getToken(user);
+      const token: Token = await this.appService.getToken(user);
       if(token !== null){
         return new ResponseDTO(
           'User logged in successfully.',
