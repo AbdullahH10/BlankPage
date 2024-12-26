@@ -58,8 +58,7 @@ let AppService = class AppService {
     async getToken(user) {
         const token = (0, uuid_1.v4)();
         const result = await this.repository.findOneAndUpdate({
-            "userName": user.userName,
-            "password": user.password
+            "userName": user.userName
         }, {
             $set: {
                 "token": token

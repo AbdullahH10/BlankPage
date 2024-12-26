@@ -28,7 +28,7 @@ export class AppController {
   @Post('/user/login')
   @HttpCode(200)
   async loginUser(@Body() user: UserDTO): Promise<ResponseDTO>{
-    const isAuthenticated = await this.appService.authenticateUser(user);
+    const isAuthenticated: boolean = await this.appService.authenticateUser(user);
     if (isAuthenticated) {
       const token: string = await this.appService.getToken(user);
       if(token !== null){

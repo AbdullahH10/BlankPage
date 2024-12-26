@@ -1,5 +1,5 @@
 import { User } from './Entity/user.entity';
-import { FindAndModifyWriteOpResultObject, MongoRepository } from 'typeorm';
+import { FindAndModifyWriteOpResultObject, MongoRepository, UpdateWriteOpResult } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserDTO } from './DTO/user.dto';
 import { Injectable } from '@nestjs/common';
@@ -29,7 +29,6 @@ export class AppService {
                     const userEntity: User = new User();
                     userEntity.userName = user.userName;
                     userEntity.password = passwordHash;
-                    userEntity.token = v4();
                     this.repository.save(userEntity);
                     return true;
                 }
@@ -56,8 +55,7 @@ export class AppService {
         const token: string = v4();
         const result: FindAndModifyWriteOpResultObject = await this.repository.findOneAndUpdate(
             {
-                "userName": user.userName,
-                "password": user.password
+                "userName": user.userName
             },
             {
                 $set: {
