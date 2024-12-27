@@ -1,18 +1,19 @@
 import { UserDTO } from './DTO/user.dto';
-import { Body, Controller, Get, HttpCode, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Headers, HttpCode, Param, Post } from '@nestjs/common';
 import { AppService } from './app.service';
 import { ResponseDTO } from './DTO/response.dto';
 import { Token } from './DTO/token.dto';
 import { MessageDTO } from './DTO/message.dto';
 import { Message } from './Model/message.model';
+import { log } from 'console';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(private readonly appService: AppService) { }
 
   @Post('/user/create')
   @HttpCode(200)
-  async createUser(@Body() user: UserDTO): Promise<ResponseDTO>{
+  async createUser(@Body() user: UserDTO): Promise<ResponseDTO> {
     const isUserCreated = await this.appService.createUser(user);
     if (isUserCreated) {
       return new ResponseDTO(
@@ -30,17 +31,17 @@ export class AppController {
 
   @Post('/user/login')
   @HttpCode(200)
-  async loginUser(@Body() user: UserDTO): Promise<ResponseDTO>{
+  async loginUser(@Body() user: UserDTO): Promise<ResponseDTO> {
     const isAuthenticated: boolean = await this.appService.authenticateUser(user);
     if (isAuthenticated) {
       const token: Token = await this.appService.getToken(user);
-      if(token !== null){
+      if (token !== null) {
         return new ResponseDTO(
           'User logged in successfully.',
           token
         );
       }
-      else{
+      else {
         return new ResponseDTO(
           'User authenticated but could not generate token.',
           token
@@ -61,8 +62,8 @@ export class AppController {
     @Param('userId') userId: string,
     @Body() message: MessageDTO
   ): Promise<ResponseDTO> {
-    const isPosted: boolean = await this.appService.addMessage(userId,message);
-    if(isPosted){
+    const isPosted: boolean = await this.appService.addMessage(userId, message);
+    if (isPosted) {
       return new ResponseDTO(
         'Message sent.',
         null
@@ -74,17 +75,28 @@ export class AppController {
     );
   }
 
-  @Get('/message/get')
+  @Get('/message/get/:userId')
   @HttpCode(200)
-  async getMessages(@Body() token: Token): Promise<ResponseDTO> {
-    const messages: Message[] = await this.appService.getMessages(token);
-    if(messages !== null && messages !== undefined){
+  async getMessages(
+    @Param('userId') userId: string,
+    @Headers('token') token: string): Promise<ResponseDTO> {
+    const tokenObj: Token = new Token();
+    tokenObj.userId = userId;
+    tokenObj.token = token;
+    if(token === undefined){
       return new ResponseDTO(
-        messages.length+' messages found.',
+        'Authentication failure. Token is required.',
+        null
+      );
+    }
+    const messages: Message[] = await this.appService.getMessages(tokenObj);
+    if (messages !== null && messages !== undefined) {
+      return new ResponseDTO(
+        messages.length + ' messages found.',
         messages
       );
     }
-    else if(messages === undefined){
+    else if (messages === undefined) {
       return new ResponseDTO(
         'No message found',
         null

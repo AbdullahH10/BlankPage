@@ -1,22 +1,26 @@
 <div class="container flex self-center justify-center m-auto h-screen w-screen">
     <div class="inbox flex flex-col m-4 p-6">
-        <div class="header flex self-center justify-between flex-row w-[750px] p-4">
-            <h1 class="flex-start self-center font-sans font-bold text-9xl mb-8 py-2">Inbox</h1>
-            <button (click)="logout()" class="logout flex self-center justify-center mt-3 mb-3 p-3 text-xl bg-black shadow-sm rounded-md text-white">Logout</button>
+        <div class="header flex align-middle justify-between lg:flex-row md:flex-col w-full p-4 mb-4">
+            <h1 class="font-sans font-bold text-9xl text-secondary">Inbox</h1>
+            <button (click)="logout()" class="logout flex self-center justify-center p-3 text-xl bg-secondary shadow-sm rounded-md text-primary lg:w-32 md:w-full">Logout</button>
         </div>
-        <div class="uid_container flex self-center justify-between flex-col w-[1000px] p-4">
-            <p class="uid flex self-center justify-left w-full h-12 p-3 bg-gray-500/75 backdrop-blur-lg text-white shadow-sm ring-gray-300 rounded-lg">{{user.id}}</p>
-            <p class="instructions mt-1 mb-1 text-gray-500 font-bold">Copy the above code and share it to start getting messages.</p>
-            <p class="instructions mt-1 mb-1 text-gray-500 font-bold">Please visit 'http://blankpage.techytreats.com/writeMessage/' to send messages.</p>
+        <div class="uid_container flex self-center justify-between flex-col lg:min-w-[960px] md:min-w-full p-4">
+            <div id="operation_message" class="success_message mb-2 p-3 bg-success rounded-lg shadow-md" [ngClass]="isHidden?'hidden':'display'">
+                <p class="text-medium text-primary">Link copied!</p>
+            </div>
+            <div class="link flex flex-row justify-between">
+                <p id="link" class="flex justify-left w-full p-3 bg-accent text-secondary rounded-l-lg">{{shareableLink}}</p>
+                <button (click)="copyLinkToClipboard()" class="copy_button flex justify-center align-middle bg-accent p-3 shadow-sm rounded-r-lg w-12 h-full"><img src="assets/copy_icon.svg" alt="copy link button"></button>
+            </div>
+            <p class="instructions my-2 text-secondary font-bold">Copy the above link and share it among your peers to start receiving messages.</p>
         </div>
-        <div class="message_box flex flex-row flex-wrap self-center justify-center">
-            <div *ngFor="let message of user.messages" class="message_card flex flex-col basis-1 m-4 border border-black-2 shadow-md rounded-lg min-h-[500px] min-w-[400px]">
-                <div class="title_bar bg-gray-200 p-4 font-medium">
-                    <!-- <p>Sent {{message.date}}</p> -->
-                    <p>Sent at<br> {{message.time | date: 'medium'}}</p>
+        <div class="messages flex flex-row flex-wrap self-auto justify-start lg:col-span-12 md:col-span-8 sm:col-span-4">
+            <div *ngFor="let message of messages" class="message_card flex flex-col m-4 border-secondary border-2 shadow-sm rounded-2xl col-span-4 min-h-[500px] lg:min-w-[400px] md:min-w-full">
+                <div class="top_bar bg-secondary p-4 font-medium text-accent rounded-t-xl">
+                    <p>Sent at<br> {{message.timestamp | date: 'EEE, d MMM yyyy, hh:mm a'}}</p>
                 </div>
-                <div class="message_body p-4 font-[14pt] text-justify bg-white h-full">
-                    <p>{{message.messageBody}}</p>
+                <div class="message_body p-4 font-[14pt] text-justify bg-primary h-full rounded-b-xl">
+                    <p>{{message.message}}</p>
                 </div>
             </div>
         </div>

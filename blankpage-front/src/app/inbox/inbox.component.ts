@@ -4,6 +4,8 @@ import { MessageService } from './../services/message.service';
 import { CookieService } from 'ngx-cookie-service';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { Token } from 'src/model/token.model';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-inbox',
@@ -12,31 +14,64 @@ import { Router } from '@angular/router';
 })
 export class InboxComponent implements OnInit {
 
-  constructor(private router: Router, private cookieService: CookieService, private messageService: MessageService) { }
+  domain: string = environment.DOMAIN;
 
-  user: User = {};
-  messages: Message[] | undefined =[];
+  token: Token = {
+    userId: "",
+    token: ""
+  };
+
+  status: string = "";
+  messages: Message[] = [];
+
+  shareableLink: string = "";
+
+  isHidden: boolean = true;
+
+  constructor(
+    private router: Router,
+    private cookieService: CookieService,
+    private messageService: MessageService) { }
 
   ngOnInit(): void {
-    this.user.id = this.cookieService.get('id');
-    this.user.email = this.cookieService.get('email');
-
-    this.getMessages();
+    if(this.cookieService.check('userId') == true && 
+    this.cookieService.check('token') == true) {
+      this.token.userId = this.cookieService.get('userId');
+      this.token.token = this.cookieService.get('token');
+      this.shareableLink = this.domain+"/message/"+this.token.userId;
+      this.getMessages();
+    }
+    else{
+      this.router.navigate(['/login']);
+    }
   }
 
 
   logout(): void {
     this.cookieService.deleteAll();
-    this.router.navigate(['/login/']);
+    this.router.navigate(['/login']);
   }
 
   getMessages(): void {
-    this.messageService.getMessages(this.user).subscribe(
-      data => {
-        this.user = data;
-        this.messages = this.user.messages;
-        console.log("Hi, "+this.user.id+"->"+this.user);
+    this.messageService
+    .getMessages(this.token)
+    .subscribe(
+      (response) => {
+        this.status = response.status;
+        if(this.status.includes("messages found.")){
+          this.messages = response.data;
+        }
       }
+    );
+  }
+
+  copyLinkToClipboard(): void {
+    navigator.clipboard.writeText(this.shareableLink);
+    this.isHidden = false;
+    setTimeout(
+      () => {
+        this.isHidden =true
+      },300
     )
   }
 

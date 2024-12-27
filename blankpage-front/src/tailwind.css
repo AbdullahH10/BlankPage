@@ -3,7 +3,5 @@
 @tailwind utilities;
 
 body {
-    background-image: url('./assets/background.svg');
-    background-attachment: fixed;
-    background-size: cover;
+    background-color: #fbfefb;
 }

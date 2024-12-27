@@ -54,8 +54,14 @@ let AppController = class AppController {
         }
         return new response_dto_1.ResponseDTO('Failed to send message. Please try again.', null);
     }
-    async getMessages(token) {
-        const messages = await this.appService.getMessages(token);
+    async getMessages(userId, token) {
+        const tokenObj = new token_dto_1.Token();
+        tokenObj.userId = userId;
+        tokenObj.token = token;
+        if (token === undefined) {
+            return new response_dto_1.ResponseDTO('Authentication failure. Token is required.', null);
+        }
+        const messages = await this.appService.getMessages(tokenObj);
         if (messages !== null && messages !== undefined) {
             return new response_dto_1.ResponseDTO(messages.length + ' messages found.', messages);
         }
@@ -91,11 +97,12 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AppController.prototype, "postMessage", null);
 __decorate([
-    (0, common_1.Get)('/message/get'),
+    (0, common_1.Get)('/message/get/:userId'),
     (0, common_1.HttpCode)(200),
-    __param(0, (0, common_1.Body)()),
+    __param(0, (0, common_1.Param)('userId')),
+    __param(1, (0, common_1.Headers)('token')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [token_dto_1.Token]),
+    __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
 ], AppController.prototype, "getMessages", null);
 AppController = __decorate([

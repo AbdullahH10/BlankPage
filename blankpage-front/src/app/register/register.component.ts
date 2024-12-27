@@ -1,6 +1,6 @@
+import { User } from 'src/model/user.model';
 import { CookieService } from 'ngx-cookie-service';
 import { UserService } from '../services/user.service';
-import { User } from './../../model/user.model';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
@@ -11,38 +11,43 @@ import { Router } from '@angular/router';
 })
 export class RegisterComponent implements OnInit {
 
-  user : User = {};
-  signupStatus: boolean = true;
-  showMessage: string = "";
+  user: User = {
+    userName: "",
+    password: ""
+  };
 
-  constructor(private router: Router, private userService: UserService, private cookieService:CookieService) {
-   }
+  isSuccessHidden: boolean = true;
+  isErrorHidden: boolean = true;
+  status: string = "";
+
+  constructor(
+    private router: Router,
+    private userService: UserService,
+    private cookieService: CookieService
+  ) { }
 
   ngOnInit(): void {
-    if(this.cookieService.check('id') == true || this.cookieService.check('email') == true) {
+    if (this.cookieService.check('id') == true || this.cookieService.check('email') == true) {
       this.router.navigate(['/inbox/']);
     }
   }
 
-  setUser(): any {
-    this.userService.setUser(this.user).subscribe(
-      data => {
-        this.signupStatus = data;
-
-        if(this.signupStatus == true) {
-          this.showMessage = "User registered successfully.";
-          let element = document.getElementById("success_message");
-          element?.classList.remove("hidden");
-          this.cookieService.set('email',`${this.user.email}`);
-          this.router.navigate(['/inbox/']);
+  createUser(): any {
+    this.userService.createUser(this.user!).subscribe(
+      (response) => {
+        this.status = response.status;
+        if (this.status === "User created successfully") {
+          this.isErrorHidden = true;
+          this.isSuccessHidden = false;
+          setTimeout(
+            () => {
+              this.router.navigate(['login']);
+            }, 2000
+          );
+          return;
         }
-    
-        else {
-          this.showMessage = "Email already registered. Try to login."
-          let element = document.getElementById("error_message");
-          element?.classList.remove("hidden");
-        }
-
+        this.isErrorHidden = false;
+          this.isSuccessHidden = true;
       }
     );
   }

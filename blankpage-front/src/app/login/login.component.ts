@@ -1,3 +1,4 @@
+import { Token } from './../../model/token.model';
 import { CookieService } from 'ngx-cookie-service';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
@@ -11,34 +12,50 @@ import { UserService } from '../services/user.service';
 })
 export class LoginComponent implements OnInit {
 
-  constructor(private router: Router, private cookieService:CookieService, private userService: UserService) { }
+  constructor(
+    private router: Router,
+    private cookieService: CookieService,
+    private userService: UserService) { }
 
-  user: User = {};
-  dbUser: User = {};
+  user: User = {
+    userName: "",
+    password: ""
+  };
+
+  status: string = "";
+  isSuccessHidden: boolean = true;
+  isErrorHidden: boolean = true;
 
   ngOnInit(): void {
-    if(this.cookieService.check('id') == true || this.cookieService.check('email') == true) {
-      this.router.navigate(['/inbox/']);
+    if (this.cookieService.check('userId') == true &&
+      this.cookieService.check('token') == true) {
+      this.router.navigate(['/inbox']);
     }
   }
 
-  validateUser(): void {
-    this.userService.getUser(this.user).subscribe(
-      data => {
-        this.dbUser = data;
-
-        if(this.dbUser!=null && this.dbUser.email === this.user.email && this.dbUser.password === this.user.password) {
-          this.cookieService.set('id',`${this.dbUser.id}`);
-          this.cookieService.set('email',`${this.dbUser.email}`);
-          this.router.navigate(['/inbox/'])
+  authenticateUser(): void {
+    this.userService
+      .loginUser(this.user)
+      .subscribe(
+        (response) => {
+          this.status = response.status;
+          if (response.status === "User logged in successfully.") {
+            this.isErrorHidden = true;
+            this.isSuccessHidden = false;
+            const token: Token = response.data;
+            this.cookieService.set('userId', token.userId);
+            this.cookieService.set('token', token.token);
+            setTimeout(
+              () => {
+                this.router.navigate(['/inbox']);
+              }, 500
+            );
+            return;
+          }
+          this.isSuccessHidden = true;
+          this.isErrorHidden = false;
         }
-
-        else{
-          let element = document.getElementById("error_message");
-          element?.classList.remove("hidden");
-        }
-      }
-    )
+      );
   }
 
 }

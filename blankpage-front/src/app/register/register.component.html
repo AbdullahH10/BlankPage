@@ -1,32 +1,32 @@
-<div class="page_container flex self-center justify-center h-screen w-full">
-    <div class="container flex self-center justify-center bg-gray-200 h-[625px] w-[600px] p-8 rounded-xl shadow-lg">
+<div class="flex self-center justify-center h-screen w-full">
+    <div class="flex self-center justify-center bg-primary ring-secondary ring-2 h-[625px] w-[600px] p-8 rounded-xl shadow-lg">
         <form class="flex grow justify-center self-center flex-col">
             <div class="form_title flex self-center justify-center mb-8">
                 <h1 class="font-bold text-6xl">Sign Up</h1>
             </div>
 
-            <div id="error_message" class="error_message mb-2 p-6 bg-red-400 border border-red-700 rounded-lg ring-2 ring-red-800 shadow-md hidden">
-                <p class="text-medium text-red-900">{{showMessage}}</p>
+            <div id="success_message" class="success_message mb-2 p-6 bg-success rounded-lg shadow-md" [ngClass]="isSuccessHidden?'hidden':'display'">
+                <p class="text-medium text-primary">{{status}}</p>
             </div>
-
-            <div id="success_message" class="success_message mb-2 p-6 bg-green-400 border border-green-700 rounded-lg ring-2 ring-green-800 shadow-md hidden">
-                <p class="text-medium text-green-900">{{showMessage}}</p>
+        
+            <div id="error_message" class="error_message mb-2 p-6 bg-error rounded-lg shadow-md" [ngClass]="isErrorHidden?'hidden':'display'">
+                <p class="text-medium text-primary">{{status}}</p>
             </div>
     
             <div class="form_body flex flex-col grow mb-4">
-                <label for="userEmail" class="w-full mt-1 mb-1 text-gray-500 font-bold">Email</label>
-                <input type="email" [(ngModel)]="user.email" name="userEmail" id="userEmail" class="flex w-full mt-1 mb-1 border border-gray-800 shadow-sm focus:ring-1 focus:ring-black rounded-lg">
-                <label for="userPassword" class="mt-1 mb-1 text-gray-500 font-bold">Password</label>
-                <input type="password" [(ngModel)]="user.password" name="userPassword" id="userPassword" class="flex w-full mt-1 mb-1 border border-gray-800 shadow-sm focus:ring-1 focus:ring-black rounded-lg">
+                <label for="userName" class="w-full mt-1 mb-1 text-secondary font-bold">Username</label>
+                <input type="text" [(ngModel)]="user.userName" name="userName" id="userName" class="flex w-full mt-1 mb-1 border-none ring-1 ring-secondary rounded-lg shadow-sm focus:ring-1 focus:ring-accent">
+                <label for="password" class="mt-1 mb-1 text-secondary font-bold">Password</label>
+                <input type="password" [(ngModel)]="user.password" name="userPassword" id="userPassword" class="flex w-full mt-1 mb-1 border-none ring-1 ring-secondary rounded-lg shadow-sm focus:ring-1 focus:ring-accent">
             </div>
     
-            <button (click)="setUser()" class="flex self-center justify-center w-full mt-3 mb-3 p-3 text-xl bg-black shadow-sm rounded-md text-white">Signup</button>
+            <button (click)="createUser()" class="flex self-center justify-center w-full mt-3 mb-3 p-3 text-xl bg-accent shadow-sm rounded-md text-secondary">Signup</button>
     
             <div class="login_prompt flex self-center justify-center mt-8">
-                <h2 class="text-lg text-gray-500">Already have an account?</h2>
+                <h2 class="text-lg text-secondary">Already have an account?</h2>
             </div>
     
-            <button routerLink="/login" class="flex self-center justify-center w-full mt-3 mb-3 p-3 text-xl bg-black shadow-sm rounded-md text-white">Login</button>
+            <button routerLink="/login" class="flex self-center justify-center w-full mt-3 mb-3 p-3 text-xl bg-accent shadow-sm rounded-md text-secondary">Login</button>
         </form>
     </div>
 </div>
