@@ -1,3 +1,4 @@
+import { LoginComponent } from './login/login.component';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
@@ -5,25 +6,25 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { RegisterComponent } from './register/register.component';
-import { LoginComponent } from './login/login.component';
-import { InboxComponent } from './inbox/inbox.component';
 import { FormsModule } from '@angular/forms';
-import { MessageboxComponent } from './messagebox/messagebox.component';
 import { CookieService } from 'ngx-cookie-service';
+import { MessageComponent } from './message/message.component';
+import { CommonModule, DatePipe } from '@angular/common';
+import { InboxComponent } from './inbox/inbox.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     RegisterComponent,
+    MessageComponent,
     LoginComponent,
-    InboxComponent,
-    MessageboxComponent
+    InboxComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
   ],
   providers: [CookieService],
   bootstrap: [AppComponent]

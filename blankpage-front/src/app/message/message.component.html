@@ -1,0 +1,27 @@
+<div class="container flex justify-center self-center m-auto p-6">
+    <form class="m-5 min-w-[600px]">
+
+        <div id="success_message" class="success_message mb-2 p-6 bg-success rounded-lg shadow-md" [ngClass]="isSuccessHidden?'hidden':'display'">
+            <p class="text-medium text-primary">{{status}}</p>
+        </div>
+    
+        <div id="error_message" class="error_message mb-2 p-6 bg-error rounded-lg shadow-md" [ngClass]="isErrorHidden?'hidden':'display'">
+            <p class="text-medium text-primary">{{status}}</p>
+        </div>
+
+        <div class="message_body flex flex-col justify-center">
+            <label for="uid" class="w-full mt-1 mb-1 text-xl text-secondary font-bold">Your message</label>
+            <textarea [(ngModel)]="messageDTO.message" rows="25" name="uid" class="flex jus w-full mt-1 mb-1 border-none ring-1 ring-secondary rounded-lg shadow-sm focus:ring-1 focus:ring-accent" placeholder="Start typing..."></textarea>
+        </div>
+
+        <div class="send_button_container flex flex-row self-center justify-right">
+            <button (click)="sendMessage()" class="send flex flex-end self-center justify-center w-full mt-3 mb-3 p-3 text-xl bg-accent shadow-sm rounded-md text-secondary">Send</button>
+        </div>
+
+        <div class="login_prompt flex self-center justify-center mt-8">
+                <h2 class="text-lg text-secondary">Want to join in?</h2>
+            </div>
+    
+            <button routerLink="/register" class="flex self-center justify-center w-full mt-3 mb-3 p-3 text-xl bg-accent shadow-sm rounded-md text-secondary">Signup Now</button>
+    </form>
+</div>
