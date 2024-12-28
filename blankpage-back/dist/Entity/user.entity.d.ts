@@ -6,5 +6,6 @@ export declare class User {
     userName: string;
     password: string;
     token: string;
+    tokenExpiration: Date;
     messages?: Message[];
 }

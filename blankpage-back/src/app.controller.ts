@@ -35,7 +35,7 @@ export class AppController {
     const isAuthenticated: boolean = await this.appService.authenticateUser(user);
     if (isAuthenticated) {
       const token: Token = await this.appService.getToken(user);
-      if (token !== null) {
+      if (token !== null && token !== undefined) {
         return new ResponseDTO(
           'User logged in successfully.',
           token
@@ -98,7 +98,7 @@ export class AppController {
     }
     else if (messages === undefined) {
       return new ResponseDTO(
-        'No message found',
+        'No messages found',
         null
       );
     }

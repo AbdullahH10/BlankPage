@@ -36,7 +36,7 @@ let AppController = class AppController {
         const isAuthenticated = await this.appService.authenticateUser(user);
         if (isAuthenticated) {
             const token = await this.appService.getToken(user);
-            if (token !== null) {
+            if (token !== null && token !== undefined) {
                 return new response_dto_1.ResponseDTO('User logged in successfully.', token);
             }
             else {
@@ -66,7 +66,7 @@ let AppController = class AppController {
             return new response_dto_1.ResponseDTO(messages.length + ' messages found.', messages);
         }
         else if (messages === undefined) {
-            return new response_dto_1.ResponseDTO('No message found', null);
+            return new response_dto_1.ResponseDTO('No messages found', null);
         }
         return new response_dto_1.ResponseDTO('Failed to get all messages. Token invalid or database not responding.', null);
     }

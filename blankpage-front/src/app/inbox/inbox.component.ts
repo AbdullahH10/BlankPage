@@ -60,7 +60,9 @@ export class InboxComponent implements OnInit {
         this.status = response.status;
         if(this.status.includes("messages found.")){
           this.messages = response.data;
+          return;
         }
+        this.logout();
       }
     );
   }

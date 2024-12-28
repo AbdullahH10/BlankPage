@@ -1,11 +1,11 @@
 <div class="container flex self-center justify-center m-auto h-screen w-screen">
     <div class="inbox flex flex-col m-4 p-6">
-        <div class="header flex align-middle justify-between lg:flex-row md:flex-col w-full p-4 mb-4">
+        <div class="header flex sm:flex-col md:flex-col lg:flex-row align-middle justify-between w-full p-4 mb-4">
             <h1 class="font-sans font-bold text-9xl text-secondary">Inbox</h1>
-            <button (click)="logout()" class="logout flex self-center justify-center p-3 text-xl bg-secondary shadow-sm rounded-md text-primary lg:w-32 md:w-full">Logout</button>
+            <button (click)="logout()" class="logout flex self-center justify-center align-middle p-3 text-xl bg-secondary shadow-sm rounded-md text-primary sm:w-full md:w-full lg:w-32">Logout</button>
         </div>
         <div class="uid_container flex self-center justify-between flex-col lg:min-w-[960px] md:min-w-full p-4">
-            <div id="operation_message" class="success_message mb-2 p-3 bg-success rounded-lg shadow-md" [ngClass]="isHidden?'hidden':'display'">
+            <div class="success_message mb-2 p-3 bg-success rounded-lg shadow-md" [ngClass]="isHidden?'hidden':'display'">
                 <p class="text-medium text-primary">Link copied!</p>
             </div>
             <div class="link flex flex-row justify-between">
@@ -14,12 +14,12 @@
             </div>
             <p class="instructions my-2 text-secondary font-bold">Copy the above link and share it among your peers to start receiving messages.</p>
         </div>
-        <div class="messages flex flex-row flex-wrap self-auto justify-start lg:col-span-12 md:col-span-8 sm:col-span-4">
-            <div *ngFor="let message of messages" class="message_card flex flex-col m-4 border-secondary border-2 shadow-sm rounded-2xl col-span-4 min-h-[500px] lg:min-w-[400px] md:min-w-full">
+        <div class="messages flex flex-row flex-wrap justify-start gap-6 align-top">
+            <div *ngFor="let message of messages" class="message_card flex flex-col border-secondary border-2 shadow-sm rounded-2xl min-h-[500px] sm: min-w-full md:min-w-full lg:min-w-[24vw] lg: max-w-[48vw]">
                 <div class="top_bar bg-secondary p-4 font-medium text-accent rounded-t-xl">
                     <p>Sent at<br> {{message.timestamp | date: 'EEE, d MMM yyyy, hh:mm a'}}</p>
                 </div>
-                <div class="message_body p-4 font-[14pt] text-justify bg-primary h-full rounded-b-xl">
+                <div class="message_body p-4 font-[14pt] text-justify text-clip text-secondary bg-primary h-full rounded-b-xl">
                     <p>{{message.message}}</p>
                 </div>
             </div>
