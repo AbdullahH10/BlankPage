@@ -40,9 +40,9 @@ export class LoginComponent implements OnInit {
         (response) => {
           this.status = response.status;
           if (response.status === "User logged in successfully.") {
+            const token: Token = response.data;
             this.isErrorHidden = true;
             this.isSuccessHidden = false;
-            const token: Token = response.data;
             this.cookieService.set('userId', token.userId);
             this.cookieService.set('token', token.token);
             setTimeout(

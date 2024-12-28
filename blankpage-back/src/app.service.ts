@@ -13,6 +13,8 @@ import { Message } from './Model/message.model';
 @Injectable()
 export class AppService {
 
+    tokenLifetimeMS: number = 30 * 60 * 1000;
+
     constructor(
         @InjectRepository(User)
         private readonly repository: MongoRepository<User>
@@ -48,21 +50,23 @@ export class AppService {
         const authUser: User = await this.repository.findOne({
             "userName": user.userName
         });
-        if(authUser !== null && authUser !== undefined){
-            return verify(authUser.password,user.password);
+        if (authUser !== null && authUser !== undefined) {
+            return verify(authUser.password, user.password);
         }
         return false;
     }
 
     async getToken(user: UserDTO): Promise<Token> {
         const token: string = v4();
+        const tokenExpiration: Date = new Date(Date.now() + this.tokenLifetimeMS);
         const result: FindAndModifyWriteOpResultObject = await this.repository.findOneAndUpdate(
             {
                 "userName": user.userName
             },
             {
                 $set: {
-                    "token": token
+                    "token": token,
+                    "tokenExpiration": tokenExpiration
                 }
             }
         );
@@ -91,7 +95,7 @@ export class AppService {
             }
         );
 
-        if(result.ok === 1 && result.value !== null){
+        if (result.ok === 1 && result.value !== null) {
             return true;
         }
         return false;
@@ -102,8 +106,8 @@ export class AppService {
             "userId": token.userId,
             "token": token.token
         });
-
-        if(user!== null && user !== undefined){
+        if (user !== null && user !== undefined &&
+            user.tokenExpiration.getTime() > Date.now()) {
             return user.messages;
         }
         return null;

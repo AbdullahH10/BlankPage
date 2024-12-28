@@ -26,6 +26,9 @@ export class User{
     @Column()
     token: string;
 
+    @Column()
+    tokenExpiration: Date;
+
     @Column({
         type: 'jsonb',
         nullable: true

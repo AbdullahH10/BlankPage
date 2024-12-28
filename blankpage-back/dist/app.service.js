@@ -25,6 +25,7 @@ const message_model_1 = require("./Model/message.model");
 let AppService = class AppService {
     constructor(repository) {
         this.repository = repository;
+        this.tokenLifetimeMS = 30 * 60 * 1000;
     }
     async createUser(user) {
         const passwordHash = await (0, argon2_1.hash)(user.password);
@@ -58,11 +59,13 @@ let AppService = class AppService {
     }
     async getToken(user) {
         const token = (0, uuid_1.v4)();
+        const tokenExpiration = new Date(Date.now() + this.tokenLifetimeMS);
         const result = await this.repository.findOneAndUpdate({
             "userName": user.userName
         }, {
             $set: {
-                "token": token
+                "token": token,
+                "tokenExpiration": tokenExpiration
             }
         });
         if (result.ok === 1) {
@@ -94,7 +97,8 @@ let AppService = class AppService {
             "userId": token.userId,
             "token": token.token
         });
-        if (user !== null && user !== undefined) {
+        if (user !== null && user !== undefined &&
+            user.tokenExpiration.getTime() > Date.now()) {
             return user.messages;
         }
         return null;

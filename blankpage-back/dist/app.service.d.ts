@@ -6,6 +6,7 @@ import { MessageDTO } from './DTO/message.dto';
 import { Message } from './Model/message.model';
 export declare class AppService {
     private readonly repository;
+    tokenLifetimeMS: number;
     constructor(repository: MongoRepository<User>);
     createUser(user: UserDTO): Promise<boolean>;
     authenticateUser(user: UserDTO): Promise<boolean>;
