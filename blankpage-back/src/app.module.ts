@@ -15,8 +15,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       inject: [ConfigService],
       useFactory: async (configService :ConfigService) => ({
         type: 'mongodb',
-        host: configService.get<string>('DB_HOST_URL'),
-        port: configService.get<number>('DB_HOST_PORT'),
+        url: configService.get<string>('DB_LIVE_URL'),
+        // host: configService.get<string>('DB_HOST_URL'),
+        // port: configService.get<number>('DB_HOST_PORT'),
         database: configService.get<string>('DB_NAME'),
         entities: [User],
         autoLoadEntities: true,
