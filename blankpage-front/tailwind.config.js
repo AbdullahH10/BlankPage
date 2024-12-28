@@ -7,7 +7,10 @@ module.exports = {
     },
     colors: {
       'primary': '#fbfefb',
-      'secondary': '#0D0221',
+      // 'secondary': '#0D0221',
+      // 'accent': '#f2a541',
+      // 'primary': '#F4FFF8',
+      'secondary': '#3A2D32',
       'accent': '#f2a541',
       'success': '#386641',
       'warning': '#f2e8cf',

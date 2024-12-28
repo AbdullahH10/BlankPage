@@ -12,17 +12,27 @@ const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const app_controller_1 = require("./app.controller");
 const app_service_1 = require("./app.service");
+const config_1 = require("@nestjs/config");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            typeorm_1.TypeOrmModule.forRoot({
-                type: 'mongodb',
-                host: '127.0.0.1',
-                port: 27017,
-                database: 'blankpage_test',
-                entities: [user_entity_1.User],
+            config_1.ConfigModule.forRoot({
+                isGlobal: true
+            }),
+            typeorm_1.TypeOrmModule.forRootAsync({
+                imports: [config_1.ConfigModule],
+                inject: [config_1.ConfigService],
+                useFactory: async (configService) => ({
+                    type: 'mongodb',
+                    host: configService.get('DB_HOST_URL'),
+                    port: configService.get('DB_HOST_PORT'),
+                    database: configService.get('DB_NAME'),
+                    entities: [user_entity_1.User],
+                    autoLoadEntities: true,
+                    useUnifiedTopology: true
+                })
             }),
             typeorm_1.TypeOrmModule.forFeature([user_entity_1.User]),
         ],

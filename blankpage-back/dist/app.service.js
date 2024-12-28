@@ -22,10 +22,12 @@ const uuid_1 = require("uuid");
 const argon2_1 = require("argon2");
 const token_dto_1 = require("./DTO/token.dto");
 const message_model_1 = require("./Model/message.model");
+const config_1 = require("@nestjs/config");
 let AppService = class AppService {
-    constructor(repository) {
+    constructor(repository, configService) {
         this.repository = repository;
-        this.tokenLifetimeMS = 30 * 60 * 1000;
+        this.configService = configService;
+        this.tokenLifetimeMS = this.configService.get('TOKEN_TTL_MS');
     }
     async createUser(user) {
         const passwordHash = await (0, argon2_1.hash)(user.password);
@@ -59,7 +61,7 @@ let AppService = class AppService {
     }
     async getToken(user) {
         const token = (0, uuid_1.v4)();
-        const tokenExpiration = new Date(Date.now() + this.tokenLifetimeMS);
+        const tokenExpiration = new Date(Date.now() + parseInt(this.tokenLifetimeMS));
         const result = await this.repository.findOneAndUpdate({
             "userName": user.userName
         }, {
@@ -107,7 +109,8 @@ let AppService = class AppService {
 AppService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_2.InjectRepository)(user_entity_1.User)),
-    __metadata("design:paramtypes", [typeorm_1.MongoRepository])
+    __metadata("design:paramtypes", [typeorm_1.MongoRepository,
+        config_1.ConfigService])
 ], AppService);
 exports.AppService = AppService;
 //# sourceMappingURL=app.service.js.map
