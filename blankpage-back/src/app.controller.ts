@@ -92,7 +92,7 @@ export class AppController {
     const messages: Message[] = await this.appService.getMessages(tokenObj);
     if (messages !== null && messages !== undefined) {
       return new ResponseDTO(
-        messages.length + ' messages found.',
+        messages.length + ' messages found',
         messages
       );
     }

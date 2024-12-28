@@ -63,7 +63,7 @@ let AppController = class AppController {
         }
         const messages = await this.appService.getMessages(tokenObj);
         if (messages !== null && messages !== undefined) {
-            return new response_dto_1.ResponseDTO(messages.length + ' messages found.', messages);
+            return new response_dto_1.ResponseDTO(messages.length + ' messages found', messages);
         }
         else if (messages === undefined) {
             return new response_dto_1.ResponseDTO('No messages found', null);
