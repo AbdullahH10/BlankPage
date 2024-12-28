@@ -1,4 +1,4 @@
-<div class="container flex self-center justify-center m-auto h-screen w-screen">
+<div class="container flex flex-grow justify-center">
     <div class="inbox flex flex-col m-4 p-6">
         <div class="header flex sm:flex-col md:flex-col lg:flex-row align-middle justify-between w-full p-4 mb-4">
             <h1 class="font-sans font-bold text-9xl text-secondary">Inbox</h1>
@@ -10,7 +10,7 @@
             </div>
             <div class="link flex flex-row justify-between">
                 <p id="link" class="flex justify-left w-full p-3 bg-accent text-secondary rounded-l-lg">{{shareableLink}}</p>
-                <button (click)="copyLinkToClipboard()" class="copy_button flex justify-center align-middle bg-accent p-3 shadow-sm rounded-r-lg w-12 h-full"><img src="assets/copy_icon.svg" alt="copy link button"></button>
+                <button (click)="copyLinkToClipboard()" class="copy_button flex justify-center align-middle bg-accent p-3 shadow-sm rounded-r-lg w-12 min-h-fit"><img src="assets/copy_icon.svg" alt="copy link button"></button>
             </div>
             <p class="instructions my-2 text-secondary font-bold">Copy the above link and share it among your peers to start receiving messages.</p>
         </div>

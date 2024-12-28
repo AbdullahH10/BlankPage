@@ -1,8 +1,15 @@
-<div class="min-w-fit">
+<div class="flex flex-col justify-between min-h-screen min-w-fit">
   <header>
     <div class="logo_container flex justify-start bg-cover bg-accent">
       <img class="flex h-24 w-24 m-2 p-2" src="assets/postme.svg" alt="Blank-page logo.">
     </div>
   </header>
-  <router-outlet class="min-w-full"></router-outlet>
+  <div class="flex flex-grow justify-center align-middle min-w-full bg-primary">
+    <router-outlet></router-outlet>
+  </div>
+  <footer>
+    <div class="footer flex flex-auto mt-auto p-2 justify-center align-middle bg-cover bg-accent">
+      <p class="text-secondary">Made with 😍 by <a class="text-primary font-bold" href="https://abdullahhassan.dev">Abdullah Hassan</a></p>
+    </div>
+  </footer>
 </div>

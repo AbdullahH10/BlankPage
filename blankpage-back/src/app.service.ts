@@ -9,16 +9,17 @@ import { hash, verify } from 'argon2';
 import { Token } from './DTO/token.dto';
 import { MessageDTO } from './DTO/message.dto';
 import { Message } from './Model/message.model';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AppService {
-
-    tokenLifetimeMS: number = 30 * 60 * 1000;
-
     constructor(
         @InjectRepository(User)
-        private readonly repository: MongoRepository<User>
+        private readonly repository: MongoRepository<User>,
+        private configService: ConfigService
     ) { }
+
+    tokenLifetimeMS: string = this.configService.get<string>('TOKEN_TTL_MS');
 
     async createUser(user: UserDTO): Promise<boolean> {
         const passwordHash: string = await hash(user.password);
@@ -58,7 +59,7 @@ export class AppService {
 
     async getToken(user: UserDTO): Promise<Token> {
         const token: string = v4();
-        const tokenExpiration: Date = new Date(Date.now() + this.tokenLifetimeMS);
+        const tokenExpiration: Date = new Date(Date.now() + parseInt(this.tokenLifetimeMS));
         const result: FindAndModifyWriteOpResultObject = await this.repository.findOneAndUpdate(
             {
                 "userName": user.userName
