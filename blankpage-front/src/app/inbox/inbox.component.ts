@@ -58,7 +58,7 @@ export class InboxComponent implements OnInit {
     .subscribe(
       (response) => {
         this.status = response.status;
-        if(this.status.includes("messages found.")){
+        if(this.status.includes("found")){
           this.messages = response.data;
           return;
         }
