@@ -22,37 +22,42 @@ export class AppService {
     tokenLifetimeMS: string = this.configService.get<string>('TOKEN_TTL_MS');
 
     async createUser(user: UserDTO): Promise<boolean> {
-        const passwordHash: string = await hash(user.password);
-        return await this.repository.findOne({
-            userName: user.userName
-        }).then(
-            (searchUser) => {
-                if (searchUser !== undefined && searchUser.userName === user.userName) {
-                    log('User already exists.');
+        if (user.userName !== "" && user.password !== "") {
+            const passwordHash: string = await hash(user.password);
+            return await this.repository.findOne({
+                userName: user.userName
+            }).then(
+                (searchUser) => {
+                    if (searchUser !== undefined && searchUser.userName === user.userName) {
+                        log('User already exists.');
+                        return false;
+                    }
+                    else {
+                        const userEntity: User = new User();
+                        userEntity.userName = user.userName;
+                        userEntity.password = passwordHash;
+                        this.repository.save(userEntity);
+                        return true;
+                    }
+                }
+            ).catch(
+                (error) => {
+                    log(error);
                     return false;
                 }
-                else {
-                    const userEntity: User = new User();
-                    userEntity.userName = user.userName;
-                    userEntity.password = passwordHash;
-                    this.repository.save(userEntity);
-                    return true;
-                }
-            }
-        ).catch(
-            (error) => {
-                log(error);
-                return false;
-            }
-        );
+            );
+        }
+        return false;
     }
 
     async authenticateUser(user: UserDTO): Promise<boolean> {
-        const authUser: User = await this.repository.findOne({
-            "userName": user.userName
-        });
-        if (authUser !== null && authUser !== undefined) {
-            return verify(authUser.password, user.password);
+        if(user.userName !== "" && user.password !== ""){
+            const authUser: User = await this.repository.findOne({
+                "userName": user.userName
+            });
+            if (authUser !== null && authUser !== undefined) {
+                return verify(authUser.password, user.password);
+            }
         }
         return false;
     }

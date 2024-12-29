@@ -19,7 +19,7 @@
                 <div class="top_bar bg-secondary p-4 font-medium text-accent rounded-t-xl">
                     <p>Sent at<br> {{message.timestamp | date: 'EEE, d MMM yyyy, hh:mm a'}}</p>
                 </div>
-                <div class="message_body p-4 font-[14pt] text-justify text-clip text-secondary bg-primary h-full rounded-b-xl">
+                <div class="message_body p-4 font-[14pt] text-justify text-clip overflow-hidden break-normal text-secondary bg-primary h-full rounded-b-xl">
                     <p>{{message.message}}</p>
                 </div>
             </div>
