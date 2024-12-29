@@ -1,0 +1,1 @@
+{"ast":null,"code":"export const environment = {\n  production: true,\n  DOMAIN: 'https://postme.abdullahhassan.dev',\n  BACKEND_URL: 'https://postme-server.onrender.com'\n};","map":null,"metadata":{},"sourceType":"module"}
