@@ -34,7 +34,8 @@ export class LoginComponent implements OnInit {
   }
 
   authenticateUser(): void {
-    this.userService
+    if(this.user.password !== "" && this.user.password !== ""){
+      this.userService
       .loginUser(this.user)
       .subscribe(
         (response) => {
@@ -56,6 +57,7 @@ export class LoginComponent implements OnInit {
           this.isErrorHidden = false;
         }
       );
+    }
   }
 
 }

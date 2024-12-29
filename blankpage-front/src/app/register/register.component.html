@@ -2,7 +2,7 @@
     <div class="flex self-center justify-center bg-primary ring-secondary ring-2 h-[625px] w-[600px] p-8 rounded-xl shadow-lg">
         <form class="flex grow justify-center self-center flex-col">
             <div class="form_title flex self-center justify-center mb-8">
-                <h1 class="font-bold text-6xl">Sign Up</h1>
+                <h1 class="font-bold text-secondary text-6xl">Sign Up</h1>
             </div>
 
             <div id="success_message" class="success_message mb-2 p-6 bg-success rounded-lg shadow-md" [ngClass]="isSuccessHidden?'hidden':'display'">
@@ -15,9 +15,9 @@
     
             <div class="form_body flex flex-col grow mb-4">
                 <label for="userName" class="w-full mt-1 mb-1 text-secondary font-bold">Username</label>
-                <input type="text" [(ngModel)]="user.userName" name="userName" id="userName" class="flex w-full mt-1 mb-1 border-none ring-1 ring-secondary rounded-lg shadow-sm focus:ring-1 focus:ring-accent">
+                <input type="text" [(ngModel)]="user.userName" name="userName" id="userName" required="true" class="flex w-full mt-1 mb-1 border-none ring-1 ring-secondary rounded-lg shadow-sm focus:ring-1 focus:ring-accent">
                 <label for="password" class="mt-1 mb-1 text-secondary font-bold">Password</label>
-                <input type="password" [(ngModel)]="user.password" name="userPassword" id="userPassword" class="flex w-full mt-1 mb-1 border-none ring-1 ring-secondary rounded-lg shadow-sm focus:ring-1 focus:ring-accent">
+                <input type="password" [(ngModel)]="user.password" name="userPassword" id="userPassword" required="true" class="flex w-full mt-1 mb-1 border-none ring-1 ring-secondary rounded-lg shadow-sm focus:ring-1 focus:ring-accent">
             </div>
     
             <button (click)="createUser()" class="flex self-center justify-center w-full mt-3 mb-3 p-3 text-xl bg-accent shadow-sm rounded-md text-secondary">Signup</button>

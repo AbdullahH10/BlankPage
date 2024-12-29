@@ -33,22 +33,24 @@ export class RegisterComponent implements OnInit {
   }
 
   createUser(): any {
-    this.userService.createUser(this.user!).subscribe(
-      (response) => {
-        this.status = response.status;
-        if (this.status === "User created successfully") {
-          this.isErrorHidden = true;
-          this.isSuccessHidden = false;
-          setTimeout(
-            () => {
-              this.router.navigate(['login']);
-            }, 2000
-          );
-          return;
+    if(this.user.userName !== "" && this.user.password !== ""){
+      this.userService.createUser(this.user).subscribe(
+        (response) => {
+          this.status = response.status;
+          if (this.status === "User created successfully") {
+            this.isErrorHidden = true;
+            this.isSuccessHidden = false;
+            setTimeout(
+              () => {
+                this.router.navigate(['login']);
+              }, 2000
+            );
+            return;
+          }
+          this.isErrorHidden = false;
+            this.isSuccessHidden = true;
         }
-        this.isErrorHidden = false;
-          this.isSuccessHidden = true;
-      }
-    );
+      );
+    }
   }
 }

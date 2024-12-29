@@ -15,9 +15,9 @@
     
             <div class="form_body flex flex-col grow mb-4">
                 <label for="userName" class="w-full mt-1 mb-1 text-secondary font-bold">Username</label>
-                <input type="text" [(ngModel)]="user.userName" name="userName" id="userName" class="flex w-full mt-1 mb-1 ring-1 border-none ring-secondary rounded-lg shadow-sm focus:ring-1 focus:ring-accent">
+                <input type="text" [(ngModel)]="user.userName" name="userName" id="userName" required="true" class="flex w-full mt-1 mb-1 ring-1 border-none ring-secondary rounded-lg shadow-sm focus:ring-1 focus:ring-accent">
                 <label for="password" class="mt-1 mb-1 text-secondary font-bold">Password</label>
-                <input type="password" [(ngModel)]="user.password" name="userPassword" id="userPassword" class="flex w-full mt-1 mb-1 ring-1 border-none ring-secondary rounded-lg shadow-sm focus:ring-1 focus:ring-accent">
+                <input type="password" [(ngModel)]="user.password" name="userPassword" id="userPassword" required="true" class="flex w-full mt-1 mb-1 ring-1 border-none ring-secondary rounded-lg shadow-sm focus:ring-1 focus:ring-accent">
             </div>
     
             <button (click)="authenticateUser()" class="flex self-center justify-center w-full mt-3 mb-3 p-3 text-xl bg-accent shadow-sm rounded-md text-secondary">Login</button>
